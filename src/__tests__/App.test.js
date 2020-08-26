@@ -26,7 +26,7 @@ describe("App component", () => {
     apiMock.onPost("repositories").reply(200, {
       id: "123",
       url: "https://github.com/josepholiveira",
-      title: "Desafio ReactJS",
+      title: "ReactJS",
       techs: ["React", "Node.js"],
     });
 
@@ -37,7 +37,7 @@ describe("App component", () => {
     await actWait();
 
     expect(getByTestId("repository-list")).toContainElement(
-      getByText("Desafio ReactJS")
+      getByText("ReactJS")
     );
   });
 

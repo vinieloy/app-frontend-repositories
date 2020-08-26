@@ -1,26 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import api from './services/api';
 
 import "./styles.css";
+import Header from './components/Header';
 
 function App() {
+  const [repos, setRepos] = useState([]);
+
+  useEffect(() => {
+    api.get('repositories')
+      .then((response) => {
+        setRepos(response.data);
+        console.log(response);
+      });
+  }, []);
+
   async function handleAddRepository() {
-    // TODO
+    const response = await api.post('repositories', {
+      title: 'AngularJS',
+      url: 'https://github.com/vinieloy/app-angular-repositories',
+      techs: ['NodeJS', 'Javascript', 'AngularJS']
+    });
+
+    const repo = response.data;
+
+    setRepos([
+      ...repos,
+      repo
+    ]);
   }
 
   async function handleRemoveRepository(id) {
-    // TODO
+    const response = await api.delete(`repositories/${id}`);
+
+    setRepos(repos.filter(
+      (repo) => repo.id !== id
+    ));
   }
 
   return (
     <div>
-      <ul data-testid="repository-list">
-        <li>
-          Repositório 1
+      <Header title="Repositórios" />
 
-          <button onClick={() => handleRemoveRepository(1)}>
-            Remover
-          </button>
-        </li>
+      <ul data-testid="repository-list">
+
+        {repos.map(function(repo) {
+          return (
+            <li key={repo.id}>
+              {repo.title}
+              <button onClick={() => handleRemoveRepository(repo.id)}>
+                Remover
+              </button>
+            </li>
+          )
+        })}
+
       </ul>
 
       <button onClick={handleAddRepository}>Adicionar</button>
